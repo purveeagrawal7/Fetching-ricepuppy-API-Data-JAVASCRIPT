@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Fetch Recepies</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+  <style>
+	table, th, td {
+		border: 1px solid black;
+	}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="display-4 mb-4">Fetch Recepies</h1>
+    <div class="d-flex">
+      <button class="btn btn-success mr-4" id="getRecepies1">Get Recepies 1</button> 
+      <button class="btn btn-warning mr-4" id="getRecepies2">Get Recepies 2</button>
+    </div>
+    <hr>
+    <div id="output"></div>
+  </div>
+
+  <script>
+    document.getElementById('getRecepies1').addEventListener('click', getRecepies1);
+    document.getElementById('getRecepies2').addEventListener('click', getRecepies2);
+
+function getRecepies2(){
+      fetch('http://www.recipepuppy.com/api/?i=bacon, broccoli, cauliflower, eggs, lettuce, mayonnaise, peas, raisins, red onions, shallot, spinach, sugar, sunflower seed')
+      .then((res) => res.json())
+      .then((data) => {
+      	//debugger
+        console.log(data.results)
+        let output = '<h2 class="mb-4">Recipies</h2>';
+        output+= `<table style="width:100%">
+        <tr>
+    <th>Title</th>
+    <th>Ingredients</th> 
+  </tr>`;
+        var patt= /\\n\r\t/g;
+        data.results.forEach(function(arr){
+          output += `
+			<tr>
+			<td>${arr.title}</td>
+			<td>${arr.ingredients}</td> 
+			</tr>
+          `;
+        });
+        output+=`</table>`;
+        document.getElementById('output').innerHTML = output;
+      })
+    }
+    function getRecepies1(){
+      fetch('http://www.recipepuppy.com/api/?i=onions,bacon&q=Vegetables&p=1')
+      .then((res) => res.json())
+      .then((data) => {
+      	let output = '<h2 class="mb-4">Recipies</h2>';
+        output+= `<table style="width:100%">
+        <tr>
+    <th>Title</th>
+     <th>Links</th>
+    <th>Ingredients</th> 
+  </tr>`;
+      	//debugger
+        var patt= /\\n\r\t/g;
+        data.results.forEach(function(arr){
+        	output += `
+			<tr>
+			<td>${arr.title.replace(patt," ").trim()}</td>
+			<td>${arr.href}</td> 
+			<td>${arr.ingredients.split(", ").sort()}</td> 
+			</tr>
+          `;
+        });
+        output+=`</table>`;
+        document.getElementById('output').innerHTML = output;
+      })
+    }
+
+  </script>
+</body>
+</html>
+
